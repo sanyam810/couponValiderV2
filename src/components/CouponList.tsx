@@ -2,17 +2,31 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
+import { FaClipboard } from "react-icons/fa";
+import toast, { Toaster } from 'react-hot-toast';
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text).then(() => {
+    toast.success('Copied to clipboard!');
+  }).catch(err => {
+    console.error("Failed to copy: ", err);
+  });
+};
 
 interface Coupon {
   id: number;
   coupon: string;
   description?: string;
   company?: string;
-  date: string; 
+  date: string;
   validated: boolean;
 }
 
-const CouponList: React.FC = () => {
+interface CouponListProps {
+  filter: 'all' | 'validated' | 'unvalidated';
+}
+
+const CouponList: React.FC<CouponListProps> = ({ filter }) => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -20,12 +34,10 @@ const CouponList: React.FC = () => {
 
   const fetchCoupons = async (page: number) => {
     try {
-      const response = await axios.get('https://zappbackend.sanyamsaini081.workers.dev/api/v1/coupons', {
-        headers: {
-          'Authorization': 'Bearer ff32892119b29704551ed019ee61217b141032d6e84ead8b4b95d0f30908df3c',
-          'Content-Type': 'application/json'
-        },
-        params: { page } 
+      const response = await axios.get(`http://127.0.0.1:8787/api/v1/coupons`, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+        params: { page },
       });
 
       if (Array.isArray(response.data.coupons) && response.data.totalPages) {
@@ -50,24 +62,34 @@ const CouponList: React.FC = () => {
   const handleButtonClick = async (id: number, currentStatus: boolean) => {
     try {
       const newStatus = !currentStatus;
-      await axios.post('https://zappbackend.sanyamsaini081.workers.dev/api/v1/coupons/validate', 
-        { id, validated: newStatus }, 
+
+      const response = await axios.post(
+        `http://127.0.0.1:8787/api/v1/validate`,
+        { id, validated: newStatus },
         {
+          withCredentials: true,
           headers: {
-            'Authorization': 'Bearer ff32892119b29704551ed019ee61217b141032d6e84ead8b4b95d0f30908df3c',
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }
       );
-      
-      
-      setCoupons(coupons.map(coupon => 
-        coupon.id === id ? { ...coupon, validated: newStatus } : coupon
-      ));
+
+      if (response.status === 200) {
+        setCoupons(coupons.map(coupon =>
+          coupon.id === id ? { ...coupon, validated: newStatus } : coupon
+        ));
+      } else {
+        console.error('Unexpected response status:', response.status);
+      }
     } catch (err) {
-      if (err instanceof Error) {
+      if (axios.isAxiosError(err)) {
+        console.error('Error response:', err.response?.data);
+        setError(err.response?.data?.error || 'An unknown error occurred');
+      } else if (err instanceof Error) {
+        console.error('Error message:', err.message);
         setError(err.message);
       } else {
+        console.error('Unknown error:', err);
         setError('An unknown error occurred');
       }
     }
@@ -83,25 +105,46 @@ const CouponList: React.FC = () => {
     return <div className="text-red-500">Error: {error}</div>;
   }
 
+  const filteredCoupons = coupons.filter(coupon => {
+    if (filter === 'all') return true;
+    return filter === 'validated' ? coupon.validated : !coupon.validated;
+  });
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Coupons</h1>
-      <ul className="space-y-4">
-        {coupons.map(coupon => (
-          <li key={coupon.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100">
+      <h1 className="text-2xl font-bold mb-4">All Coupons</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+        {filteredCoupons.map(coupon => (
+          <div key={coupon.id} className="eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100">
             <div>
-              <p className="text-xl text-black font-semibold">{coupon.coupon}</p>
-              <div className='pt-2'>
-                <Separator />
-              </div>
-              {/* <Separator /> */}
-              <div className='pt-2 text-sm'>
-                <p className="text-gray-700">Company: {coupon.company || 'No company available'}</p>
-                <p className="text-gray-700">Description: {coupon.description || 'No description available'}</p>
-                <p className="text-gray-700">Created At: {new Date(coupon.date).toLocaleDateString()}</p>
-                <p className="text-gray-700 font-bold">Validated: {coupon.validated ? 'Yes' : 'No'}</p>
+              <div className='flex flex-row justify-between'>
+                <div>
+                  <p className="text-xl text-black font-semibold">{coupon.coupon}</p>
+                </div>
+                
+                <div style={{ marginTop: '2px' }}>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => copyToClipboard(coupon.coupon)}
+                      className="text-xl ml-2 text-black hover:text-gray-900"
+                      aria-label="Copy coupon code"
+                    >
+                      <FaClipboard />
+                    </button>
+                  </div>
+                </div>
               </div>
               
+              <div className='mt-2 bg-black' style={{ paddingTop: '4px' }}>
+                <Separator />
+              </div>
+              <div className='pt-2 text-sm text-black font-semibold'>
+                <p>Company - {coupon.company || 'No company available'}</p>
+                <p>Source - {coupon.source || 'No source available'}</p>
+                <p>Description - {coupon.description || 'No description available'}</p>
+                <p>Created At - {new Date(coupon.date).toLocaleDateString()}</p>
+                <p className="font-bold">Validated: {coupon.validated ? 'Yes' : 'No'}</p>
+              </div>
             </div>
             <div className='pt-4'>
               <Button
@@ -111,34 +154,35 @@ const CouponList: React.FC = () => {
                 {coupon.validated ? 'Unvalidate' : 'Validate'}
               </Button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       <div className="justify-center flex flex-col items-center mt-10">
         <div className='gap-6 flex'>
-            <div>
-                <Button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="bg-gray-800 text-white hover:bg-gray-700"
-                >
-                  Previous
-                </Button>
-            </div>
-            <div>
-                <Button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="bg-gray-800 text-white hover:bg-gray-700"
-                >
-                  Next
-                </Button>
-            </div>
+          <div>
+            <Button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="bg-gray-800 text-white hover:bg-gray-700"
+            >
+              Previous
+            </Button>
+          </div>
+          <div>
+            <Button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="bg-gray-800 text-white hover:bg-gray-700"
+            >
+              Next
+            </Button>
+          </div>
         </div>
         <div className='pt-2 font-bold'>
-            <span className="self-center">Page {currentPage} of {totalPages}</span>
+          <span className="self-center">Page {currentPage} of {totalPages}</span>
         </div>
       </div>
+      <Toaster /> {/* Add Toaster here */}
     </div>
   );
 };
