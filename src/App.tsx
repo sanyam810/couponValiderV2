@@ -1,15 +1,21 @@
-// App.tsx
-import React from 'react';
-import CouponList from "./components/CouponList";
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-const App: React.FC = () => {
+import { Signin } from './pages/Signin'
+import {Home} from './pages/Home'
+
+
+function App() {
+
   return (
-    <div className="min-h-screen overflow-hidden bg-gray-100 ">
-      <div className='mx-auto max-w-screen-xl'>
-        <CouponList />
-      </div>
-    </div>
-  );
-};
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Signin />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
+}
 
-export default App;
+export default App
