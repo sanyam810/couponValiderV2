@@ -33,6 +33,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [showTodayOnly, setShowTodayOnly] = useState<boolean>(false);
+  const [companyNames, setCompanyNames] = useState<string[]>([]);
   
 
   const fetchCoupons = async (page: number, company = '') => {
@@ -46,6 +47,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
       if (Array.isArray(response.data.coupons) && response.data.totalPages) {
         setCoupons(response.data.coupons);
         setTotalPages(response.data.totalPages);
+        setCompanyNames(response.data.companyNames || []);
       } else {
         throw new Error('Unexpected response format');
       }
@@ -145,9 +147,9 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
       
       {/* Company Filter Dropdown */}
       <div className="mb-4">
-        <label htmlFor="company-filter" className="block text-sm font-medium text-gray-700">
+        {/* <label htmlFor="company-filter" className="block text-sm font-medium text-gray-700">
           Filter by Company
-        </label>
+        </label> */}
         <select
           id="company-filter"
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -155,8 +157,9 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
           onChange={handleCompanyChange}
         >
           <option value="">All Companies</option>
-          <option value="MakeMyTrip">MakeMyTrip</option>
-          <option value="CompanyB">Company B</option>
+          {companyNames.map(company => (
+            <option key={company} value={company}>{company}</option>
+          ))}
           
         </select>
       </div>
@@ -172,10 +175,13 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
           />
           <span className="ml-2">Show only coupons uploaded today</span>
         </label>
+        <div className='mt-2 pt-1 bg-black'>
+          <Separator />
+        </div>
       </div>
 
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pt-2">
         {filteredCoupons.map(coupon => (
           <div key={coupon.id} className="eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100">
             <div>
