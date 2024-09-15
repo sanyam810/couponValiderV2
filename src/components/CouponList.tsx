@@ -20,6 +20,7 @@ interface Coupon {
   company?: string;
   date: string;
   validated: boolean;
+  source?: string;
 }
 
 interface CouponListProps {
