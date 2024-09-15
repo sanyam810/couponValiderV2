@@ -16,7 +16,7 @@ jobs:
           node-version: '20'
       
       - name: Install Dependencies
-        run: npm install && npm install --legacy-peer-deps
+        run: npm run clean && npm install && npm install three && npm install --legacy-peer-deps
         
       - name: Run Build
         run: npm run build
