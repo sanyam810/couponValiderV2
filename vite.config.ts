@@ -11,10 +11,13 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [],
+      external: [], // Keep it empty to ensure `three` is bundled
     },
     commonjsOptions: {
       include: [/node_modules/],
     },
+  },
+  optimizeDeps: {
+    include: ["three"], // Ensure Vite optimizes `three`
   },
 });
