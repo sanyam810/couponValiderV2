@@ -11,13 +11,13 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [],
+      external: [], // Ensure no external modules are skipped (we want to bundle `three`)
     },
     commonjsOptions: {
-      include: [/node_modules/],
+      include: [/node_modules/], // Ensure that dependencies from node_modules can be bundled
     },
   },
   optimizeDeps: {
-    include: ["three"],
+    include: ["three"], // Pre-bundle `three` during development to avoid issues
   },
 });
