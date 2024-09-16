@@ -39,7 +39,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
 
   const fetchCoupons = async (page: number, company = '') => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8787/api/v1/coupons`, {
+      const response = await axios.get(`https://zappbackend.sanyamsaini081.workers.dev/api/v1/coupons`, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
         params: { page, company },
@@ -70,7 +70,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
       const newStatus = !currentStatus;
 
       const response = await axios.post(
-        `http://127.0.0.1:8787/api/v1/validate`,
+        `https://zappbackend.sanyamsaini081.workers.dev/api/v1/validate`,
         { id, validated: newStatus },
         {
           withCredentials: true,

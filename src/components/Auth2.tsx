@@ -17,7 +17,7 @@ const Auth = () => {
     async function sendRequest() {
         try {
             const endpoint = "signup"
-            const response = await axios.post(`http://127.0.0.1:8787/api/v1/auth/signup`, postInputs,
+            const response = await axios.post(`https://zappbackend.sanyamsaini081.workers.dev/api/v1/auth/signup`, postInputs,
                 {
                     withCredentials: true,  
                     headers: { 'Content-Type': 'application/json' }
