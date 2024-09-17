@@ -35,14 +35,15 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [showTodayOnly, setShowTodayOnly] = useState<boolean>(false);
   const [companyNames, setCompanyNames] = useState<string[]>([]);
-  
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 
-  const fetchCoupons = async (page: number, company = '') => {
+  const fetchCoupons = async (page: number, company = '',search='') => {
     try {
-      const response = await axios.get(`https://zappbackend.sanyamsaini081.workers.dev/api/v1/coupons`, {
+      const response = await axios.get(`http://localhost:8787/api/v1/coupons`, {
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
-        params: { page, company },
+        params: { page, company,search },
       });
 
       if (Array.isArray(response.data.coupons) && response.data.totalPages) {
@@ -62,15 +63,23 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
   };
 
   useEffect(() => {
-    fetchCoupons(currentPage, selectedCompany);
-  }, [currentPage, selectedCompany]);
+    const delayDebounce = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    fetchCoupons(currentPage, selectedCompany,debouncedQuery);
+  }, [currentPage, selectedCompany,debouncedQuery]);
 
   const handleButtonClick = async (id: number, currentStatus: boolean) => {
     try {
       const newStatus = !currentStatus;
 
       const response = await axios.post(
-        `https://zappbackend.sanyamsaini081.workers.dev/api/v1/validate`,
+        `http://localhost:8787/api/v1/validate`,
         { id, validated: newStatus },
         {
           withCredentials: true,
@@ -142,9 +151,16 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
     setShowTodayOnly(!showTodayOnly);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">All Coupons</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        {filter === 'all' ? 'All Coupons' : filter === 'validated' ? 'Validated Coupons' : 'Unvalidated Coupons'}
+      </h1>
       
       {/* Company Filter Dropdown */}
       <div className="mb-4">
@@ -163,6 +179,16 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
           ))}
           
         </select>
+      </div>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search Coupons"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
       </div>
 
       
