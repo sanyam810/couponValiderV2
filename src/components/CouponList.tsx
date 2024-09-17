@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { FaClipboard } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
+import { FaBars, FaTimes, FaSearch } from 'react-icons/fa';
 
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text).then(() => {
@@ -169,7 +170,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
         </label> */}
         <select
           id="company-filter"
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full border border-black rounded-md shadow-sm focus:ring-black focus:border-black sm:text-sm"
           value={selectedCompany}
           onChange={handleCompanyChange}
         >
@@ -180,19 +181,8 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
           
         </select>
       </div>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search Coupons"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        />
-      </div>
-
       
-      <div className="mb-4">
+      <div className="mb-4 mt-4">
         <label className="inline-flex items-center">
           <input
             type="checkbox"
@@ -200,17 +190,27 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
             checked={showTodayOnly}
             onChange={handleTodayFilterChange}
           />
-          <span className="ml-2">Show only coupons uploaded today</span>
+          <span className="ml-2 text-sm font-bold">Show coupons updated in last 24hrs</span>
         </label>
         <div className='mt-2 pt-1 bg-black'>
           <Separator />
         </div>
       </div>
-
+      
+      <div className="flex items-center border rounded-md overflow-hidden mb-4">
+          <FaSearch className="text-gray-500 mx-2 text-sm" />
+          <input
+            type="text"
+            placeholder="Search Coupons"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="flex-1 px-2 py-1 outline-none text-black border-none focus:ring-0"
+          />
+      </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pt-2">
         {filteredCoupons.map(coupon => (
-          <div key={coupon.id} className="eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100">
+          <div key={coupon.id} className={coupon.validated ? 'eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100' : 'eth-card2 shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100'}>
             <div>
               <div className='flex flex-row justify-between'>
                 <div>
@@ -244,7 +244,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
             <div className='pt-4'>
               <Button
                 onClick={() => handleButtonClick(coupon.id, coupon.validated)}
-                className={`bg-black text-white hover:bg-white hover:text-black border border-black`}
+                className={`bg-black text-white hover:bg-white hover:text-black border border-black w-full`}
               >
                 {coupon.validated ? 'Unvalidate' : 'Validate'}
               </Button>
