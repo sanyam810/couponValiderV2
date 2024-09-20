@@ -77,7 +77,7 @@ const Auth = () => {
                             <Turnstile onSuccess={(token) => {
                                 setToken(token)
                                 setPostInputs({ ...postInputs, cfT: token })
-                            }} siteKey='0x4AAAAAAAkYYA8vp7efWe9I' />    
+                            }} siteKey='0x4AAAAAAAkYimU4rQa8ZQ44' />    
                         </div>
                         
                         <button
