@@ -2,14 +2,23 @@ import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
+import { Turnstile } from '@marsidev/react-turnstile'
+import Cookies from 'js-cookie';
 
 const Auth = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState<string>("")
     const [postInputs, setPostInputs] = useState({
         email: "",
         password: "",
+        cfT: ""
     });
     const [loading, setLoading] = useState(false); 
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPostInputs({ ...postInputs, [e.target.name]: e.target.value });
+    };
+    
 
     async function sendRequest() {
         setLoading(true); 
@@ -18,7 +27,10 @@ const Auth = () => {
                 withCredentials: true, 
                 headers: { 'Content-Type': 'application/json' }
             });
+            const { token } = response.data; // Assuming the token is in response.data
+            console.log(token);
             console.log(response.data);
+            Cookies.set('token', token, { expires: 1, path: '/' });
             toast.success('Sign In Successful!');
             navigate("/home");
         } catch (e) {
@@ -43,17 +55,31 @@ const Auth = () => {
                         </div>
                     </div>
                     <div className="pt-8">
-                        <LabelledInput 
-                            placeholder="Enter your email" 
-                            label="Email" 
-                            onChange={(e) => setPostInputs({ ...postInputs, email: e.target.value })} 
-                        />
-                        <LabelledInput 
-                            placeholder="Enter your password" 
-                            type="password" 
-                            label="Password" 
-                            onChange={(e) => setPostInputs({ ...postInputs, password: e.target.value })} 
-                        />
+                        <div>
+                            <LabelledInput
+                                placeholder="Enter your email"
+                                label="Email"
+                                name="email"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div>
+                            <LabelledInput
+                                placeholder="Enter your password"
+                                type="password"
+                                label="Password"
+                                name="password"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        
+                        <div className="mt-4">
+                            <Turnstile onSuccess={(token) => {
+                                setToken(token)
+                                setPostInputs({ ...postInputs, cfT: token })
+                            }} siteKey='0x4AAAAAAAkYYA8vp7efWe9I' />    
+                        </div>
+                        
                         <button
                             onClick={sendRequest}
                             type="button"
@@ -99,9 +125,10 @@ interface LabelledInputProps {
     placeholder: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     type?: string;
+    name: string;
 }
 
-function LabelledInput({ label, placeholder, onChange, type = "text" }: LabelledInputProps) {
+function LabelledInput({ label, placeholder, onChange,name, type = "text" }: LabelledInputProps) {
     return (
         <div>
             <label className="block mb-2 text-sm font-semibold text-black pt-4">{label}</label>
@@ -110,6 +137,7 @@ function LabelledInput({ label, placeholder, onChange, type = "text" }: Labelled
                 type={type}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 placeholder={placeholder}
+                name={name}
                 required
             />
         </div>
