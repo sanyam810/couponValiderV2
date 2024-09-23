@@ -34,13 +34,15 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{secrets.EC2_SSH_KEY}}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} -p ${{secrets.SSH_PORT}} << 'EOF'
-          cd couponValiderV2/
-          git pull
-          npm install
-          npm run build
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} -p ${{secrets.SSH_PORT}} "
+          source ~/.bashrc && \
+          source ~/.nvm/nvm.sh || true && \
+          cd couponValiderV2/ && \
+          git pull && \
+          npm install && \
+          npm run build && \
           sudo systemctl restart nginx
-        EOF
+        "
       env:
         EC2_SSH_KEY: ${{secrets.EC2_SSH_KEY}}
         EC2_HOST: ${{secrets.EC2_HOST}}
