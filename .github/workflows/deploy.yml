@@ -29,18 +29,16 @@ jobs:
     - name: Verify Pushed Image
       run: docker pull zapr/couponsdash:latest
 
-    - name: Start ssh-agent and add key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{secrets.EC2_SSH_KEY}}
-        ssh-passphrase: ${{secrets.SSH_PASSPHRASE}}
-
     - name: SSH into server and deploy
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} -p ${{secrets.SSH_PORT}} << 'EOF'
+      uses: appleboy/ssh-action@v0.1.3
+      with:
+        host: ${{secrets.EC2_HOST}}
+        username: ${{secrets.EC2_USER}}
+        key: ${{secrets.EC2_SSH_KEY}}
+        port: ${{secrets.SSH_PORT}}
+        script: |
           cd couponValiderV2/
           git pull
           npm install
           npm run build
           sudo systemctl restart nginx
-        EOF
