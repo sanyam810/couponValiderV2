@@ -139,27 +139,27 @@ input[type="file"] {
 }
 
 .eth-card {
-  background-color: #f4f4f4;
-  background-image: 
+  background-color: rgba(255, 0, 0, 0.2);
+  /* background-image: 
     radial-gradient(at 90% 40%, rgba(255, 140, 140, 0.6) 0, transparent 60%),
     radial-gradient(at 60% 80%, rgba(140, 255, 140, 0.6) 0, transparent 50%),
     radial-gradient(at 30% 30%, rgba(140, 140, 255, 0.6) 0, transparent 70%),
     radial-gradient(at 80% 20%, rgba(255, 255, 140, 0.6) 0, transparent 55%),
     radial-gradient(at 20% 70%, rgba(255, 140, 255, 0.6) 0, transparent 45%),
     radial-gradient(at 70% 90%, rgba(140, 255, 255, 0.6) 0, transparent 60%),
-    radial-gradient(at 50% 50%, rgba(255, 200, 140, 0.6) 0, transparent 50%);
+    radial-gradient(at 50% 50%, rgba(255, 200, 140, 0.6) 0, transparent 50%); */
 }
 
 .eth-card2 {
-  background-color: #f4f4f4;
-  background-image: 
+  background-color: rgba(134, 210, 147, .4);
+  /* background-image: 
     radial-gradient(at 90% 40%, rgba(255, 140, 140, 0.6) 0, transparent 60%),
     radial-gradient(at 60% 80%, rgba(242, 0, 8, 0.6) 0, transparent 50%),
     radial-gradient(at 30% 30%, rgba(140, 140, 255, 0.6) 0, transparent 70%),
     radial-gradient(at 80% 20%, rgba(255, 255, 140, 0.6) 0, transparent 55%),
     radial-gradient(at 20% 70%, rgba(255, 140, 255, 0.6) 0, transparent 45%),
     radial-gradient(at 70% 90%, rgba(205, 15, 18, 0.6) 0, transparent 60%),
-    radial-gradient(at 50% 50%, rgba(255, 200, 140, 0.6) 0, transparent 50%);
+    radial-gradient(at 50% 50%, rgba(255, 200, 140, 0.6) 0, transparent 50%); */
 }
 
 
