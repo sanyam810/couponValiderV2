@@ -47,10 +47,10 @@ const Auth = () => {
             <div className="flex justify-center">
                 <div>
                     <div className="px-10 ">
-                        <div className="text-3xl font-extrabold pl-9">
+                        <div className="text-3xl font-extrabold pl-14">
                           Sign In
                         </div>
-                        <div className="text-slate-400">
+                        <div className="text-slate-400 pl-4">
                             Sign in to your account
                         </div>
                     </div>
@@ -86,7 +86,7 @@ const Auth = () => {
                             className="text-white w-full bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-4 relative"
                             disabled={loading}
                         >
-                            {loading ? (<div style={{marginLeft:'90px'}}>
+                            {loading ? (<div style={{marginLeft:'120px'}}>
                                 <svg
                                     className="w-5 h-5 mr-3 animate-spin"
                                     xmlns="http://www.w3.org/2000/svg"
