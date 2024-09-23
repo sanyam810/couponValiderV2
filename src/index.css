@@ -138,7 +138,7 @@ input[type="file"] {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.eth-card {
+.eth-card2 {
   background-color: rgba(255, 0, 0, 0.2);
   /* background-image: 
     radial-gradient(at 90% 40%, rgba(255, 140, 140, 0.6) 0, transparent 60%),
@@ -150,7 +150,7 @@ input[type="file"] {
     radial-gradient(at 50% 50%, rgba(255, 200, 140, 0.6) 0, transparent 50%); */
 }
 
-.eth-card2 {
+.eth-card {
   background-color: rgba(134, 210, 147, .4);
   /* background-image: 
     radial-gradient(at 90% 40%, rgba(255, 140, 140, 0.6) 0, transparent 60%),
