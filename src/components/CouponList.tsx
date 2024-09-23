@@ -210,7 +210,7 @@ const CouponList: React.FC<CouponListProps> = ({ filter }) => {
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pt-2">
         {filteredCoupons.map(coupon => (
-          <div key={coupon.id} className={coupon.validated ? 'eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100' : 'eth-card2 shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg hover:bg-gray-100'}>
+          <div key={coupon.id} className={coupon.validated ? 'eth-card shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg ' : 'eth-card2 shadow-md rounded-lg p-4 border border-gray-200 flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg '}>
             <div>
               <div className='flex flex-row justify-between'>
                 <div>
