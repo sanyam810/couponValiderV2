@@ -28,3 +28,17 @@ jobs:
 
     - name: Verify Pushed Image
       run: docker pull zapr/couponsdash:latest
+
+    - name: SSH into server and deploy
+      uses: appleboy/ssh-action@v0.1.3
+      with:
+        host: ${{secrets.EC2_HOST}}
+        username: ${{secrets.EC2_USER}}
+        key: ${{secrets.EC2_SSH_KEY}}
+        port: ${{secrets.SSH_PORT}}
+        script: |
+          cd couponValiderV2/
+          git pull
+          npm install
+          npm run build
+          sudo systemctl restart nginx
